@@ -18,6 +18,7 @@ import { Visit, VisitOptions } from "./drive/visit"
 import { PageSnapshot } from "./drive/page_snapshot"
 import { FrameElement } from "../elements/frame_element"
 import { FetchResponse } from "../http/fetch_response"
+import { FormUrlUpdater } from "./drive/form_url_updater"
 
 export type TimingData = {}
 
@@ -33,6 +34,7 @@ export class Session implements FormSubmitObserverDelegate, HistoryDelegate, Lin
   readonly formSubmitObserver = new FormSubmitObserver(this)
   readonly scrollObserver = new ScrollObserver(this)
   readonly streamObserver = new StreamObserver(this)
+  readonly formUrlUpdater = new FormUrlUpdater()
 
   readonly frameRedirector = new FrameRedirector(document.documentElement)
 
@@ -51,6 +53,7 @@ export class Session implements FormSubmitObserverDelegate, HistoryDelegate, Lin
       this.streamObserver.start()
       this.frameRedirector.start()
       this.history.start()
+      this.formUrlUpdater.start()
       this.started = true
       this.enabled = true
     }
@@ -70,6 +73,7 @@ export class Session implements FormSubmitObserverDelegate, HistoryDelegate, Lin
       this.streamObserver.stop()
       this.frameRedirector.stop()
       this.history.stop()
+      this.formUrlUpdater.stop()
       this.started = false
     }
   }

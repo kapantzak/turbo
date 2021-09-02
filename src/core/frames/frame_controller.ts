@@ -153,6 +153,7 @@ export class FrameController implements AppearanceObserverDelegate, FetchRequest
     this.formSubmission = new FormSubmission(this, element, submitter)
     if (this.formSubmission.fetchRequest.isIdempotent) {
       this.navigateFrame(element, this.formSubmission.fetchRequest.url.href, submitter)
+      session.formUrlUpdater.updateUrl(this.formSubmission)
     } else {
       const { fetchRequest } = this.formSubmission
       this.prepareHeadersForRequest(fetchRequest.headers, fetchRequest)

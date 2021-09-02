@@ -216,6 +216,18 @@
       <div id="messages">
       </div>
     </turbo-frame>
+    <div id="form-url-update">
+      <form action="/src/tests/fixtures/frames/frame.html"
+        method="get"
+        data-turbo-frame="frame"
+        data-turbo-url-base="_current"
+        data-turbo-handle-popstate="true">
+        <input type="text" name="name" value="John" placeholder="name">
+        <input type="number" name="age" value="39" placeholder="age">
+        <input type="submit">
+      </form>
+      <turbo-frame id="frame">Turbo frame</turbo-frame>
+    </div>
     <a href="/__turbo/messages?content=Link!&type=stream" data-turbo-method="post" id="link-method-outside-frame">Stream link outside frame</a>
     <hr>
     <turbo-frame id="hello"></turbo-frame>

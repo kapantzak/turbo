@@ -468,6 +468,31 @@ export class FormSubmissionTests extends TurboDriveTestCase {
     this.assert.ok(await this.nextEventOnTarget("form_one", "turbo:before-fetch-response"))
   }
 
+  async "test intercepted form submit sets the respective url search params"() {
+    // const nameField:  = await this.querySelector<HTMLInputElement>('#form-url-update [name="name"]')
+    // const ageField = await this.querySelector<HTMLInputElement>('#form-url-update [name="age"]')
+    // nameField.value = "John"
+    // ageField.value = 39
+
+    await this.clickSelector('#form-url-update [type="submit"]')
+    await this.nextBeat
+
+    const pathname = await this.pathname
+    const search = await this.search
+    const url = `${pathname}${search}`
+    
+    this.assert.equal(url, "/src/tests/fixtures/form.html?name=John&age=39")
+  }
+
+  async "test intercepted form submit issues a request with respective search params"() {
+    await this.clickSelector('#form-url-update [type="submit"]')
+
+    const { url } = await this.nextEventNamed('turbo:before-fetch-request')
+    const { search } = new URL(url)
+    
+    this.assert.equal(search, "?name=John&age=39")
+  }
+
   get formSubmitted(): Promise<boolean> {
     return this.hasSelector("html[data-form-submitted]")
   }
