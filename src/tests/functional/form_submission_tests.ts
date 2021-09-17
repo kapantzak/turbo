@@ -469,10 +469,20 @@ export class FormSubmissionTests extends TurboDriveTestCase {
   }
 
   async "test intercepted form submit sets the respective url search params"() {
-    const setFieldValuesAndAssert = async (name: string, age: string, expectedUrl: string) => {
+    const setForm1ValuesAndAssert = async (name: string, age: string, expectedUrl: string) => {
       await this.typeToSelector('#form-url-update-name', name)
       await this.typeToSelector('#form-url-update-age', age)
-      await this.clickSelector('#form-url-update [type="submit"]')
+      await this.clickSelector('#form_1 [type="submit"]')
+      await this.nextBeat
+
+      const url = await this.url
+      this.assert.equal(url, expectedUrl)
+    }
+
+    const setForm2ValuesAndAssert = async (country: string, city: string, expectedUrl: string) => {
+      await this.typeToSelector('#form-url-update-country', country)
+      await this.typeToSelector('#form-url-update-city', city)
+      await this.clickSelector('#form_2 [type="submit"]')
       await this.nextBeat
 
       const url = await this.url
@@ -485,16 +495,27 @@ export class FormSubmissionTests extends TurboDriveTestCase {
       this.assert.equal(url, expectedUrl)
     }
 
-    await setFieldValuesAndAssert("John", "35", "/src/tests/fixtures/form.html?name=John&age=35")
-    await setFieldValuesAndAssert("John", "36", "/src/tests/fixtures/form.html?name=John&age=36")
-    await setFieldValuesAndAssert("Tom", "37", "/src/tests/fixtures/form.html?name=Tom&age=37")
+    await setForm1ValuesAndAssert("John", "35", "/src/tests/fixtures/form.html?name=John&age=35")
+    await setForm1ValuesAndAssert("John", "36", "/src/tests/fixtures/form.html?name=John&age=36")
+    await setForm1ValuesAndAssert("Tom", "37", "/src/tests/fixtures/form.html?name=Tom&age=37")
 
     await goBackAndAssert("/src/tests/fixtures/form.html?name=John&age=36")
+    await goBackAndAssert("/src/tests/fixtures/form.html?name=John&age=35")
+
+    await setForm2ValuesAndAssert("Greece", "Thessaloniki",
+      "/src/tests/fixtures/form.html?name=John&age=35&country=Greece&city=Thessaloniki")
+
+    await setForm1ValuesAndAssert("Mary", "30",
+      "/src/tests/fixtures/form.html?name=Mary&age=30&country=Greece&city=Thessaloniki")
+
+    await goBackAndAssert("/src/tests/fixtures/form.html?name=John&age=35&country=Greece&city=Thessaloniki")
     await goBackAndAssert("/src/tests/fixtures/form.html?name=John&age=35")
   }
 
   async "test intercepted form submit issues a request with respective search params"() {
-    await this.clickSelector('#form-url-update [type="submit"]')
+    await this.typeToSelector('#form-url-update-name', "John")
+    await this.typeToSelector('#form-url-update-age', "39")
+    await this.clickSelector('#form_1 [type="submit"]')
 
     const { url } = await this.nextEventNamed('turbo:before-fetch-request')
     const { search } = new URL(url)

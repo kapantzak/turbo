@@ -59,7 +59,21 @@ export class FormUrlUpdater {
 
   private getNewUrl(form: HTMLFormElement, searchParams: FormData) {
     const baseUrl = this.getBaseUrl(form)
-    return `${baseUrl}?${searchParams}`;
+    return `${baseUrl}?${this.getMergedParams(searchParams)}`;
+  }
+
+  private getMergedParams(searchParams: FormData) {
+    const currentSearchParams = new URLSearchParams(location.search);
+    for (let pair of searchParams.entries()) {
+      const key = pair[0];
+      const value = pair[1].toString();
+      if (currentSearchParams.has(pair[0])) {
+        currentSearchParams.set(key, value);
+      } else {
+        currentSearchParams.append(key, value);
+      }
+    }
+    return currentSearchParams;
   }
 
   // PopState handling

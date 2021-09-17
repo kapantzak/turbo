@@ -216,15 +216,24 @@
       <div id="messages">
       </div>
     </turbo-frame>
-    <div id="form-url-update">
-      <form action="/src/tests/fixtures/frames/frame.html"
+    <div>
+      <form id="form_1" action="/src/tests/fixtures/frames/frame.html"
         method="get"
         data-turbo-frame="frame"
         data-turbo-url-base="_current"
         data-turbo-handle-popstate="true">
         <input id="form-url-update-name" type="text" name="name" placeholder="name">
         <input id="form-url-update-age" type="number" name="age" placeholder="age">
-        <input id="form-url-update-submit" type="submit">
+        <input type="submit">
+      </form>
+      <form id="form_2" action="/src/tests/fixtures/frames/frame.html"
+        method="get"
+        data-turbo-frame="frame"
+        data-turbo-url-base="_current"
+        data-turbo-handle-popstate="true">
+        <input id="form-url-update-country" type="text" name="country" placeholder="country">
+        <input id="form-url-update-city" type="text" name="city" placeholder="city">
+        <input type="submit">
       </form>
       <turbo-frame id="frame">Turbo frame</turbo-frame>
     </div>
