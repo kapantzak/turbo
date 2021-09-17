@@ -469,19 +469,28 @@ export class FormSubmissionTests extends TurboDriveTestCase {
   }
 
   async "test intercepted form submit sets the respective url search params"() {
-    // const nameField:  = await this.querySelector<HTMLInputElement>('#form-url-update [name="name"]')
-    // const ageField = await this.querySelector<HTMLInputElement>('#form-url-update [name="age"]')
-    // nameField.value = "John"
-    // ageField.value = 39
+    const setFieldValuesAndAssert = async (name: string, age: string, expectedUrl: string) => {
+      await this.typeToSelector('#form-url-update-name', name)
+      await this.typeToSelector('#form-url-update-age', age)
+      await this.clickSelector('#form-url-update [type="submit"]')
+      await this.nextBeat
 
-    await this.clickSelector('#form-url-update [type="submit"]')
-    await this.nextBeat
+      const url = await this.url
+      this.assert.equal(url, expectedUrl)
+    }
 
-    const pathname = await this.pathname
-    const search = await this.search
-    const url = `${pathname}${search}`
-    
-    this.assert.equal(url, "/src/tests/fixtures/form.html?name=John&age=39")
+    const goBackAndAssert = async (expectedUrl: string) => {
+      await this.goBack();
+      const url = await this.url
+      this.assert.equal(url, expectedUrl)
+    }
+
+    await setFieldValuesAndAssert("John", "35", "/src/tests/fixtures/form.html?name=John&age=35")
+    await setFieldValuesAndAssert("John", "36", "/src/tests/fixtures/form.html?name=John&age=36")
+    await setFieldValuesAndAssert("Tom", "37", "/src/tests/fixtures/form.html?name=Tom&age=37")
+
+    await goBackAndAssert("/src/tests/fixtures/form.html?name=John&age=36")
+    await goBackAndAssert("/src/tests/fixtures/form.html?name=John&age=35")
   }
 
   async "test intercepted form submit issues a request with respective search params"() {

@@ -67,6 +67,14 @@ export class FunctionalTestCase extends InternTestCase {
     return this.evaluate(element => element.scrollIntoView(), element)
   }
 
+  async typeToSelector(selector: string, value: string): Promise<void> {
+    return this.remote
+      .findByCssSelector(selector)
+      .clearValue()
+      .type(value)
+      .end()
+  }
+
   async pressTab(): Promise<void> {
     return this.remote.getActiveElement().then(activeElement => activeElement.type(('\uE004'))) // TAB
   }
@@ -147,6 +155,10 @@ export class FunctionalTestCase extends InternTestCase {
 
   get searchParams(): Promise<URLSearchParams> {
     return this.evaluate(() => location.search).then(search => new URLSearchParams(search))
+  }
+
+  get url(): Promise<string> {
+    return this.evaluate(() => `${location.pathname}${location.search}`)
   }
 
   async getSearchParam(key: string): Promise<string> {
